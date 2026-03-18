@@ -775,6 +775,28 @@
   </style>
 </head>
 <body>
+
+<!-- Entry Selector Screen -->
+<div id="entryScreen" style="position:fixed;inset:0;background:#0b0f1a;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:9999;color:white;font-family:Inter, sans-serif;">
+  <h1 style="font-size:32px;font-weight:800;margin-bottom:10px;text-align:center;">المنصة التجريبية الأولى</h1>
+  <p style="opacity:0.7;margin-bottom:30px;text-align:center;">اختر طريقة استكشاف المنصة</p>
+  <div style="display:flex;gap:20px;flex-wrap:wrap;justify-content:center;">
+    <button onclick="enterMode('player')" style="padding:16px 28px;border:none;border-radius:12px;background:#0F62FE;color:white;font-size:16px;font-weight:600;cursor:pointer;">الدخول كـ لاعب</button>
+    <button onclick="enterMode('club')" style="padding:16px 28px;border:none;border-radius:12px;background:#18B368;color:white;font-size:16px;font-weight:600;cursor:pointer;">الدخول كـ جهة / أكاديمية</button>
+  </div>
+</div>
+
+<script>
+function enterMode(mode){
+  document.getElementById('entryScreen').style.display='none';
+  if(mode==='club'){
+    // محاولة فتح لوحة الجهة مباشرة إذا موجودة
+    const clubBtn = document.querySelector('[data-page="club-dashboard"]');
+    if(clubBtn){ clubBtn.click(); }
+  }
+}
+</script>
+
   <div class="app-shell">
     <aside class="sidebar">
       <div class="brand">
