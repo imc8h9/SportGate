@@ -1,0 +1,1806 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SportGate Prototype</title>
+  <style>
+    :root {
+      --bg: #f5f7fb;
+      --surface: #ffffff;
+      --surface-2: #f0f4ff;
+      --primary: #0f62fe;
+      --primary-2: #1247c9;
+      --secondary: #18b368;
+      --text: #111827;
+      --muted: #6b7280;
+      --line: #e5e7eb;
+      --warning: #f59e0b;
+      --danger: #ef4444;
+      --success: #16a34a;
+      --shadow: 0 20px 50px rgba(15, 98, 254, 0.08);
+      --radius-xl: 28px;
+      --radius-lg: 20px;
+      --radius-md: 14px;
+      --radius-sm: 10px;
+    }
+
+    * { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; font-family: "Inter", "Segoe UI", Tahoma, Arial, sans-serif; background: linear-gradient(180deg, #f7f9ff 0%, #f4f7fb 100%); color: var(--text); }
+    body { min-height: 100vh; }
+    button, input, select, textarea { font: inherit; }
+    a { color: inherit; text-decoration: none; }
+
+    .app-shell {
+      display: grid;
+      grid-template-columns: 280px 1fr;
+      min-height: 100vh;
+    }
+
+    .sidebar {
+      background: linear-gradient(180deg, #0b1736 0%, #0f2248 100%);
+      color: #fff;
+      padding: 24px 18px;
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+      border-left: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 12px 10px;
+      border-radius: 18px;
+      background: rgba(255,255,255,0.06);
+      backdrop-filter: blur(14px);
+    }
+
+    .brand-mark {
+      width: 50px;
+      height: 50px;
+      border-radius: 16px;
+      background: linear-gradient(135deg, var(--primary), #5fa3ff 70%);
+      display: grid;
+      place-items: center;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+      box-shadow: 0 10px 24px rgba(15,98,254,.35);
+    }
+
+    .brand h1 { margin: 0; font-size: 20px; }
+    .brand p { margin: 4px 0 0; color: rgba(255,255,255,.72); font-size: 12px; }
+
+    .role-switch {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      background: rgba(255,255,255,.08);
+      padding: 6px;
+      border-radius: 16px;
+      gap: 6px;
+    }
+
+    .role-switch button {
+      border: 0;
+      color: rgba(255,255,255,.82);
+      background: transparent;
+      border-radius: 12px;
+      padding: 12px 10px;
+      cursor: pointer;
+      transition: .2s ease;
+      font-weight: 700;
+    }
+
+    .role-switch button.active {
+      background: #fff;
+      color: #0b1736;
+      box-shadow: 0 8px 24px rgba(0,0,0,.12);
+    }
+
+    .menu {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-top: 6px;
+    }
+
+    .menu-title {
+      font-size: 12px;
+      color: rgba(255,255,255,.55);
+      padding: 0 8px;
+      margin-top: 6px;
+    }
+
+    .menu button {
+      width: 100%;
+      border: 0;
+      background: transparent;
+      color: rgba(255,255,255,.85);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 14px;
+      border-radius: 16px;
+      cursor: pointer;
+      text-align: right;
+      transition: .2s ease;
+      font-weight: 600;
+    }
+
+    .menu button:hover,
+    .menu button.active { background: rgba(255,255,255,.09); color: #fff; }
+
+    .sidebar-card {
+      margin-top: auto;
+      background: linear-gradient(180deg, rgba(255,255,255,.12), rgba(255,255,255,.05));
+      border: 1px solid rgba(255,255,255,.08);
+      border-radius: 24px;
+      padding: 18px;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.08);
+    }
+
+    .sidebar-card h3 { margin: 0 0 10px; font-size: 16px; }
+    .sidebar-card p { margin: 0 0 14px; color: rgba(255,255,255,.72); line-height: 1.65; font-size: 13px; }
+
+    .ghost-btn, .primary-btn, .soft-btn, .danger-btn, .outline-btn {
+      border: 0;
+      border-radius: 14px;
+      padding: 12px 16px;
+      cursor: pointer;
+      font-weight: 700;
+      transition: .2s ease;
+    }
+
+    .primary-btn {
+      background: linear-gradient(135deg, var(--primary), #327dff);
+      color: #fff;
+      box-shadow: 0 12px 24px rgba(15,98,254,.22);
+    }
+
+    .primary-btn:hover { transform: translateY(-1px); }
+    .ghost-btn { background: rgba(255,255,255,.12); color: #fff; }
+    .soft-btn { background: #edf4ff; color: var(--primary-2); }
+    .danger-btn { background: #fef2f2; color: var(--danger); }
+    .outline-btn { background: #fff; color: var(--text); border: 1px solid var(--line); }
+
+    .content {
+      padding: 26px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .search-wrap {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: rgba(255,255,255,.85);
+      border: 1px solid rgba(255,255,255,.65);
+      box-shadow: var(--shadow);
+      border-radius: 22px;
+      padding: 14px 16px;
+      backdrop-filter: blur(16px);
+    }
+
+    .search-wrap input {
+      width: 100%;
+      border: 0;
+      background: transparent;
+      outline: none;
+      font-size: 15px;
+      color: var(--text);
+    }
+
+    .top-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .icon-btn {
+      width: 48px;
+      height: 48px;
+      border-radius: 16px;
+      border: 1px solid var(--line);
+      background: #fff;
+      display: grid;
+      place-items: center;
+      cursor: pointer;
+      box-shadow: var(--shadow);
+      position: relative;
+      font-size: 18px;
+    }
+
+    .badge-dot {
+      position: absolute;
+      top: 8px;
+      left: 8px;
+      width: 10px;
+      height: 10px;
+      border-radius: 999px;
+      background: var(--danger);
+      border: 2px solid #fff;
+    }
+
+    .avatar {
+      width: 48px;
+      height: 48px;
+      border-radius: 16px;
+      background: linear-gradient(135deg, #dbeafe, #bfdbfe);
+      color: var(--primary-2);
+      display: grid;
+      place-items: center;
+      font-weight: 800;
+      box-shadow: var(--shadow);
+      border: 1px solid #d6e4ff;
+    }
+
+    .page {
+      display: none;
+      flex-direction: column;
+      gap: 20px;
+      animation: fade .22s ease;
+    }
+
+    .page.active { display: flex; }
+
+    @keyframes fade {
+      from { opacity: .2; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: 1.35fr .95fr;
+      gap: 20px;
+    }
+
+    .card {
+      background: rgba(255,255,255,.88);
+      border: 1px solid rgba(255,255,255,.8);
+      backdrop-filter: blur(16px);
+      border-radius: var(--radius-xl);
+      box-shadow: var(--shadow);
+      padding: 22px;
+    }
+
+    .hero-main {
+      position: relative;
+      overflow: hidden;
+      background: radial-gradient(circle at top left, rgba(255,255,255,.24), rgba(255,255,255,.05)), linear-gradient(135deg, #0f62fe 0%, #1647ad 100%);
+      color: #fff;
+      min-height: 240px;
+    }
+
+    .hero-main::after {
+      content: "";
+      position: absolute;
+      width: 260px;
+      height: 260px;
+      background: rgba(255,255,255,.09);
+      border-radius: 50%;
+      left: -80px;
+      bottom: -90px;
+    }
+
+    .hero-main::before {
+      content: "";
+      position: absolute;
+      width: 180px;
+      height: 180px;
+      background: rgba(255,255,255,.08);
+      border-radius: 50%;
+      right: -40px;
+      top: -40px;
+    }
+
+    .hero-main h2 {
+      margin: 0;
+      font-size: 32px;
+      line-height: 1.25;
+      max-width: 620px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero-main p {
+      margin: 14px 0 18px;
+      color: rgba(255,255,255,.82);
+      line-height: 1.8;
+      max-width: 620px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero-meta {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-top: 24px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .mini-stat {
+      background: rgba(255,255,255,.12);
+      border: 1px solid rgba(255,255,255,.16);
+      border-radius: 18px;
+      padding: 14px;
+    }
+
+    .mini-stat strong { display: block; font-size: 21px; margin-bottom: 6px; }
+    .mini-stat span { color: rgba(255,255,255,.76); font-size: 13px; }
+
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 14px;
+      height: 100%;
+    }
+
+    .summary-item {
+      background: var(--surface-2);
+      border-radius: 22px;
+      padding: 18px;
+      border: 1px solid #dce7ff;
+    }
+
+    .summary-item h4 { margin: 0 0 8px; font-size: 14px; color: var(--muted); }
+    .summary-item strong { font-size: 28px; display: block; margin-bottom: 8px; }
+    .summary-item small { color: var(--muted); line-height: 1.7; }
+
+    .section-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+
+    .section-head h3 { margin: 0; font-size: 20px; }
+    .section-head p { margin: 6px 0 0; color: var(--muted); font-size: 14px; }
+
+    .filter-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .pill {
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 10px 14px;
+      font-size: 13px;
+      color: var(--muted);
+      cursor: pointer;
+    }
+
+    .pill.active { background: #e8f0ff; color: var(--primary-2); border-color: #cfe0ff; }
+
+    .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+    .grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
+
+    .opportunity-card {
+      border-radius: 24px;
+      background: #fff;
+      border: 1px solid #edf0f5;
+      padding: 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      box-shadow: 0 16px 30px rgba(17,24,39,.04);
+      min-height: 260px;
+    }
+
+    .card-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .entity {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .entity-logo {
+      width: 52px;
+      height: 52px;
+      border-radius: 16px;
+      display: grid;
+      place-items: center;
+      font-weight: 800;
+      color: #fff;
+      background: linear-gradient(135deg, #1e3a8a, #2563eb);
+      box-shadow: 0 12px 24px rgba(37,99,235,.22);
+      flex-shrink: 0;
+    }
+
+    .entity-logo.green { background: linear-gradient(135deg, #0f766e, #10b981); }
+    .entity-logo.purple { background: linear-gradient(135deg, #6d28d9, #8b5cf6); }
+    .entity-logo.orange { background: linear-gradient(135deg, #b45309, #fb923c); }
+
+    .entity h4 { margin: 0; font-size: 16px; }
+    .entity p { margin: 5px 0 0; color: var(--muted); font-size: 13px; }
+
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .tag.blue { background: #ecf4ff; color: var(--primary-2); }
+    .tag.green { background: #ecfdf3; color: #0f7a45; }
+    .tag.orange { background: #fff7e8; color: #b35b00; }
+    .tag.red { background: #fef2f2; color: #b91c1c; }
+
+    .muted { color: var(--muted); }
+    .meta-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .meta-chip {
+      padding: 8px 10px;
+      border-radius: 999px;
+      background: #f8fafc;
+      border: 1px solid #eef2f7;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .opportunity-card h5 {
+      margin: 0;
+      font-size: 18px;
+      line-height: 1.5;
+    }
+
+    .opportunity-card p.desc {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.85;
+      font-size: 14px;
+    }
+
+    .card-actions {
+      margin-top: auto;
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .stat-panel {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+    }
+
+    .stat-box {
+      background: #fff;
+      border-radius: 22px;
+      border: 1px solid #edf0f5;
+      padding: 18px;
+      box-shadow: 0 12px 24px rgba(17,24,39,.04);
+    }
+
+    .stat-box span { color: var(--muted); font-size: 13px; }
+    .stat-box strong { display: block; font-size: 28px; margin: 10px 0 8px; }
+    .stat-box small { color: var(--muted); }
+
+    .split {
+      display: grid;
+      grid-template-columns: 1.2fr .8fr;
+      gap: 16px;
+    }
+
+    .list-card {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .list-item {
+      display: flex;
+      justify-content: space-between;
+      gap: 14px;
+      align-items: center;
+      padding: 14px;
+      border-radius: 18px;
+      background: #fff;
+      border: 1px solid #edf0f5;
+    }
+
+    .list-item h5, .list-item p { margin: 0; }
+    .list-item p { color: var(--muted); font-size: 13px; margin-top: 6px; }
+    .list-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .form-group.full { grid-column: 1 / -1; }
+
+    .form-group label {
+      font-size: 13px;
+      font-weight: 700;
+      color: #374151;
+    }
+
+    .field, select, textarea {
+      width: 100%;
+      border-radius: 16px;
+      border: 1px solid #e5e7eb;
+      background: #fff;
+      padding: 14px 14px;
+      outline: none;
+      transition: .2s ease;
+    }
+
+    textarea { min-height: 120px; resize: vertical; }
+
+    .field:focus, select:focus, textarea:focus {
+      border-color: #bfd4ff;
+      box-shadow: 0 0 0 4px rgba(15,98,254,.08);
+    }
+
+    .upload-box {
+      border: 2px dashed #cbd5e1;
+      background: #f8fbff;
+      border-radius: 20px;
+      padding: 18px;
+      text-align: center;
+      color: var(--muted);
+      line-height: 1.8;
+    }
+
+    .table-wrap {
+      overflow: auto;
+      border: 1px solid #edf0f5;
+      border-radius: 22px;
+      background: #fff;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 860px;
+    }
+
+    th, td {
+      padding: 16px 14px;
+      border-bottom: 1px solid #f0f3f7;
+      text-align: right;
+      vertical-align: middle;
+    }
+
+    th {
+      color: var(--muted);
+      font-size: 13px;
+      background: #fbfcfe;
+      position: sticky;
+      top: 0;
+      z-index: 1;
+    }
+
+    tr:last-child td { border-bottom: 0; }
+
+    .progress {
+      width: 100%;
+      height: 10px;
+      background: #eef2f7;
+      border-radius: 999px;
+      overflow: hidden;
+    }
+
+    .progress > div {
+      height: 100%;
+      background: linear-gradient(135deg, var(--secondary), #30d283);
+      border-radius: inherit;
+    }
+
+    .timeline {
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+      position: relative;
+      padding-right: 10px;
+    }
+
+    .timeline::before {
+      content: "";
+      position: absolute;
+      right: 16px;
+      top: 5px;
+      bottom: 5px;
+      width: 2px;
+      background: #dbe5f3;
+    }
+
+    .timeline-item {
+      position: relative;
+      padding-right: 42px;
+    }
+
+    .timeline-item::before {
+      content: "";
+      position: absolute;
+      right: 8px;
+      top: 3px;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: #fff;
+      border: 4px solid var(--primary);
+      box-sizing: border-box;
+    }
+
+    .timeline-item h5 { margin: 0 0 6px; }
+    .timeline-item p { margin: 0; color: var(--muted); line-height: 1.8; font-size: 14px; }
+
+    .sticky-footer-demo {
+      position: sticky;
+      bottom: 12px;
+      background: rgba(255,255,255,.88);
+      border: 1px solid rgba(255,255,255,.8);
+      backdrop-filter: blur(18px);
+      border-radius: 22px;
+      box-shadow: var(--shadow);
+      padding: 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .bottom-nav-mobile {
+      display: none;
+    }
+
+    .kpi-note {
+      padding: 14px 16px;
+      border-radius: 18px;
+      background: #eef6ff;
+      color: var(--primary-2);
+      border: 1px solid #d8e7ff;
+      line-height: 1.8;
+      font-size: 14px;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 42px 20px;
+      border: 1px dashed #d6deea;
+      border-radius: 24px;
+      background: linear-gradient(180deg, #fff, #fafcff);
+    }
+
+    .empty-state h4 { margin: 14px 0 10px; font-size: 22px; }
+    .empty-state p { margin: 0 auto 18px; max-width: 560px; line-height: 1.9; color: var(--muted); }
+
+    .screen-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 14px;
+      border-radius: 999px;
+      background: #f5f8ff;
+      border: 1px solid #d9e6ff;
+      color: var(--primary-2);
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    @media (max-width: 1280px) {
+      .hero, .split { grid-template-columns: 1fr; }
+      .grid-3 { grid-template-columns: repeat(2, 1fr); }
+      .stat-panel { grid-template-columns: repeat(2, 1fr); }
+      .app-shell { grid-template-columns: 100px 1fr; }
+      .brand h1, .brand p, .menu-title, .menu button span, .sidebar-card { display: none; }
+      .brand { justify-content: center; padding: 10px; }
+      .menu button { justify-content: center; padding: 14px; }
+      .role-switch { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 920px) {
+      .app-shell { display: block; }
+      .sidebar { display: none; }
+      .content { padding: 16px; padding-bottom: 92px; }
+      .grid-3, .grid-2, .form-grid, .stat-panel, .summary-grid { grid-template-columns: 1fr; }
+      .hero-main h2 { font-size: 26px; }
+      .topbar { flex-direction: column; align-items: stretch; }
+      .bottom-nav-mobile {
+        position: fixed;
+        bottom: 12px;
+        right: 12px;
+        left: 12px;
+        display: grid;
+        grid-template-columns: repeat(5, 1fr);
+        gap: 8px;
+        background: rgba(255,255,255,.92);
+        border: 1px solid rgba(255,255,255,.82);
+        box-shadow: var(--shadow);
+        backdrop-filter: blur(18px);
+        padding: 8px;
+        border-radius: 22px;
+        z-index: 50;
+      }
+      .bottom-nav-mobile button {
+        border: 0;
+        background: transparent;
+        border-radius: 16px;
+        padding: 10px 6px;
+        color: var(--muted);
+        font-size: 12px;
+        font-weight: 700;
+      }
+      .bottom-nav-mobile button.active { background: #eff5ff; color: var(--primary-2); }
+    }
+  </style>
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="brand-mark">SG</div>
+        <div>
+          <h1>SportGate</h1>
+          <p>Prototype for Sports Opportunity Platform</p>
+        </div>
+      </div>
+
+      <div class="role-switch" id="roleSwitch">
+        <button class="active" data-role="player">واجهة اللاعب</button>
+        <button data-role="club">واجهة الجهة</button>
+      </div>
+
+      <div class="menu-title">مسارات اللاعب</div>
+      <nav class="menu role-player">
+        <button class="nav-btn active" data-page="player-home"><span>🏠 الرئيسية</span></button>
+        <button class="nav-btn" data-page="explore"><span>🔎 استكشاف الفرص</span></button>
+        <button class="nav-btn" data-page="opportunity"><span>📄 تفاصيل الفرصة</span></button>
+        <button class="nav-btn" data-page="apply"><span>📝 التقديم على فرصة</span></button>
+        <button class="nav-btn" data-page="join-request"><span>📬 طلب انضمام</span></button>
+        <button class="nav-btn" data-page="profile"><span>👤 الملف الرياضي</span></button>
+        <button class="nav-btn" data-page="applications"><span>📊 طلباتي</span></button>
+        <button class="nav-btn" data-page="notifications"><span>🔔 الإشعارات</span></button>
+      </nav>
+
+      <div class="menu-title role-club" style="display:none;">مسارات الجهة الرياضية</div>
+      <nav class="menu role-club" style="display:none;">
+        <button class="nav-btn" data-page="club-dashboard"><span>📈 لوحة التحكم</span></button>
+        <button class="nav-btn" data-page="new-opportunity"><span>➕ نشر فرصة</span></button>
+        <button class="nav-btn" data-page="review-applicants"><span>🧾 مراجعة المتقدمين</span></button>
+      </nav>
+
+      <div class="sidebar-card">
+        <h3>لماذا هذا النموذج قوي؟</h3>
+        <p>لأنه لا يكتفي بعرض الفرص، بل يمنح اللاعب مسارًا بديلًا عبر "طلب الانضمام"، ويمنح الأندية لوحة تشغيل متكاملة لإدارة التوظيف الرياضي.</p>
+        <button class="ghost-btn" id="demoFlowBtn">استعراض المسار الكامل</button>
+      </div>
+    </aside>
+
+    <main class="content">
+      <div class="topbar">
+        <div class="search-wrap">
+          <span>🔍</span>
+          <input type="text" placeholder="ابحث عن رياضة، نادٍ، أكاديمية، مدينة، أو فرصة" />
+        </div>
+        <div class="top-actions">
+          <button class="icon-btn" title="الإشعارات"><span class="badge-dot"></span>🔔</button>
+          <button class="icon-btn" title="الإعدادات">⚙️</button>
+          <div class="avatar">م</div>
+        </div>
+      </div>
+
+      <section class="page active" id="player-home">
+        <div class="hero">
+          <div class="card hero-main">
+            <div class="screen-badge">بوابة الفرص الرياضية الذكية</div>
+            <h2>مرحبًا محمد، هناك 12 فرصة جديدة تناسب عمرك، رياضتك، واهتماماتك الحالية.</h2>
+            <p>SportGate منصة تجمع الفرص الرياضية المعلنة، وتمنحك أيضًا خيار إرسال طلب انضمام مباشر حتى عندما لا تكون هناك فرصة منشورة. اكتشف، قدّم، وتابع كل شيء من مكان واحد.</p>
+            <div class="hero-actions">
+              <button class="primary-btn" data-goto="explore">استكشاف الفرص</button>
+              <button class="outline-btn" data-goto="join-request">إرسال طلب انضمام</button>
+              <button class="soft-btn" data-goto="profile">إكمال الملف الرياضي</button>
+            </div>
+            <div class="hero-meta">
+              <div class="mini-stat"><strong>12</strong><span>فرصة جديدة مناسبة لك</span></div>
+              <div class="mini-stat"><strong>84%</strong><span>نسبة اكتمال ملفك الرياضي</span></div>
+              <div class="mini-stat"><strong>5</strong><span>طلبات تحت المراجعة</span></div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="section-head">
+              <div>
+                <h3>ملخص سريع</h3>
+                <p>لوحة أولية تلخص وضعك الحالي داخل المنصة</p>
+              </div>
+            </div>
+            <div class="summary-grid">
+              <div class="summary-item"><h4>فرص محفوظة</h4><strong>7</strong><small>فرص قمت بحفظها للرجوع لها لاحقًا.</small></div>
+              <div class="summary-item"><h4>جهات موثقة</h4><strong>143</strong><small>أندية وأكاديميات يمكن التقديم عليها بثقة.</small></div>
+              <div class="summary-item"><h4>إشعارات جديدة</h4><strong>9</strong><small>منها 3 تحديثات على طلباتك الأخيرة.</small></div>
+              <div class="summary-item"><h4>فرص قريبة</h4><strong>18</strong><small>ضمن نطاق 30 كم من موقعك المختار.</small></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="section-head">
+            <div>
+              <h3>اختصارات سريعة</h3>
+              <p>المسارات الأساسية التي يستخدمها اللاعب داخل المنصة</p>
+            </div>
+          </div>
+          <div class="filter-row">
+            <button class="pill active" data-goto="explore">فرص حالية</button>
+            <button class="pill" data-goto="explore">أندية قريبة</button>
+            <button class="pill" data-goto="explore">أكاديميات حسب الرياضة</button>
+            <button class="pill" data-goto="join-request">إرسال طلب انضمام</button>
+            <button class="pill" data-goto="applications">متابعة طلباتي</button>
+          </div>
+        </div>
+
+        <div>
+          <div class="section-head">
+            <div>
+              <h3>فرص متاحة الآن</h3>
+              <p>فرص منشورة من أندية وأكاديميات مع متطلبات واضحة وتقديم مباشر</p>
+            </div>
+            <button class="soft-btn" data-goto="explore">عرض الكل</button>
+          </div>
+          <div class="grid-3">
+            <article class="opportunity-card">
+              <div class="card-top">
+                <div class="entity">
+                  <div class="entity-logo">NA</div>
+                  <div>
+                    <h4>أكاديمية النخبة</h4>
+                    <p>الرياض · كرة قدم</p>
+                  </div>
+                </div>
+                <span class="tag green">مفتوحة الآن</span>
+              </div>
+              <h5>استقبال طلبات لاعبي كرة القدم تحت 17 سنة</h5>
+              <p class="desc">فرصة تدريبية تنافسية تستهدف المواهب الشابة للانضمام إلى برنامج تطوير موسمي مع تجارب حضورية وتقييم مهاري.</p>
+              <div class="meta-list">
+                <span class="meta-chip">15–17 سنة</span>
+                <span class="meta-chip">جناح / وسط</span>
+                <span class="meta-chip">يغلق بعد 4 أيام</span>
+              </div>
+              <div class="card-actions">
+                <button class="primary-btn" data-goto="opportunity">عرض الفرصة</button>
+                <button class="outline-btn">حفظ</button>
+              </div>
+            </article>
+
+            <article class="opportunity-card">
+              <div class="card-top">
+                <div class="entity">
+                  <div class="entity-logo green">SB</div>
+                  <div>
+                    <h4>نادي السرعة</h4>
+                    <p>الدمام · سباحة</p>
+                  </div>
+                </div>
+                <span class="tag orange">قريبة الإغلاق</span>
+              </div>
+              <h5>فرصة انضمام لفريق السباحة التنافسي للفئة الناشئة</h5>
+              <p class="desc">النادي يبحث عن سباحين لديهم التزام تدريبي ومستوى متوسط إلى متقدم مع استعداد للمشاركة في المنافسات المحلية.</p>
+              <div class="meta-list">
+                <span class="meta-chip">14–18 سنة</span>
+                <span class="meta-chip">سباحة حرة</span>
+                <span class="meta-chip">يغلق غدًا</span>
+              </div>
+              <div class="card-actions">
+                <button class="primary-btn" data-goto="opportunity">عرض الفرصة</button>
+                <button class="outline-btn">حفظ</button>
+              </div>
+            </article>
+
+            <article class="opportunity-card">
+              <div class="card-top">
+                <div class="entity">
+                  <div class="entity-logo purple">BB</div>
+                  <div>
+                    <h4>أكاديمية الارتقاء</h4>
+                    <p>جدة · كرة سلة</p>
+                  </div>
+                </div>
+                <span class="tag blue">مناسبة لك</span>
+              </div>
+              <h5>فتح تسجيل لاعبي كرة السلة للفئة المتوسطة والمتقدمة</h5>
+              <p class="desc">برنامج تطوير يركز على المهارات الأساسية، الالتزام الأسبوعي، وإعداد اللاعبين للتجارب الرسمية داخل الأندية الشريكة.</p>
+              <div class="meta-list">
+                <span class="meta-chip">16–19 سنة</span>
+                <span class="meta-chip">Guard / Forward</span>
+                <span class="meta-chip">نطاق إقليمي</span>
+              </div>
+              <div class="card-actions">
+                <button class="primary-btn" data-goto="opportunity">عرض الفرصة</button>
+                <button class="outline-btn">حفظ</button>
+              </div>
+            </article>
+          </div>
+        </div>
+
+        <div class="split">
+          <div class="card list-card">
+            <div class="section-head">
+              <div>
+                <h3>فرص مناسبة لك</h3>
+                <p>بناءً على العمر، الرياضة، المدينة، ومستوى اللاعب</p>
+              </div>
+            </div>
+            <div class="list-item">
+              <div>
+                <h5>برنامج تجارب كرة القدم لفئة الشباب</h5>
+                <p>أكاديمية التقدم · الخبر · متبقي 3 أيام</p>
+              </div>
+              <div class="list-actions">
+                <span class="tag blue">مناسب لك</span>
+                <button class="soft-btn" data-goto="opportunity">عرض</button>
+              </div>
+            </div>
+            <div class="list-item">
+              <div>
+                <h5>استقبال طلبات لاعبي التنس الصاعدين</h5>
+                <p>نادي الأفق · الرياض · فرصة مميزة</p>
+              </div>
+              <div class="list-actions">
+                <span class="tag green">جديد</span>
+                <button class="soft-btn" data-goto="opportunity">عرض</button>
+              </div>
+            </div>
+            <div class="list-item">
+              <div>
+                <h5>برنامج تدريب متخصص لرياضيي ألعاب القوى</h5>
+                <p>مركز الميدان · الظهران · مراجعة سريعة</p>
+              </div>
+              <div class="list-actions">
+                <span class="tag orange">قريب</span>
+                <button class="soft-btn" data-goto="opportunity">عرض</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="card list-card">
+            <div class="section-head">
+              <div>
+                <h3>أكاديميات موصى بها</h3>
+                <p>جهات موثقة تتوافق مع اهتماماتك الحالية</p>
+              </div>
+            </div>
+            <div class="list-item">
+              <div>
+                <h5>أكاديمية النخبة</h5>
+                <p>كرة قدم · 4 فرص نشطة · موثقة</p>
+              </div>
+              <button class="outline-btn" data-goto="opportunity">عرض الجهة</button>
+            </div>
+            <div class="list-item">
+              <div>
+                <h5>مركز التوازن</h5>
+                <p>سباحة · فرص ناشئين · استجابة عالية</p>
+              </div>
+              <button class="outline-btn" data-goto="opportunity">عرض الجهة</button>
+            </div>
+            <div class="list-item">
+              <div>
+                <h5>نادي المستقبل</h5>
+                <p>كرة سلة · شريك رسمي · فرص إقليمية</p>
+              </div>
+              <button class="outline-btn" data-goto="opportunity">عرض الجهة</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="page" id="explore">
+        <div class="card">
+          <div class="section-head">
+            <div>
+              <h3>استكشاف الفرص</h3>
+              <p>ابحث باستخدام الرياضة، المدينة، الفئة العمرية، ونوع الجهة للوصول إلى الفرصة المناسبة بسرعة</p>
+            </div>
+            <div class="screen-badge">Search & Discovery</div>
+          </div>
+          <div class="filter-row" style="margin-bottom:14px;">
+            <button class="pill active">كرة قدم</button>
+            <button class="pill">الرياض</button>
+            <button class="pill">15–18 سنة</button>
+            <button class="pill">مستوى متوسط</button>
+            <button class="pill">أندية</button>
+            <button class="pill">أكاديميات</button>
+            <button class="pill">يغلق هذا الأسبوع</button>
+          </div>
+          <div class="grid-3">
+            <article class="opportunity-card">
+              <div class="card-top">
+                <div class="entity">
+                  <div class="entity-logo">FC</div>
+                  <div>
+                    <h4>أكاديمية العرين</h4>
+                    <p>الرياض · كرة قدم</p>
+                  </div>
+                </div>
+                <span class="tag blue">فرصة مميزة</span>
+              </div>
+              <h5>تجارب لاعبي الوسط والهجوم لفئة 16–17 سنة</h5>
+              <p class="desc">البرنامج يبحث عن لاعبين ملتزمين وقادرين على الحضور للتجارب الرسمية خلال الأسبوع القادم.</p>
+              <div class="meta-list">
+                <span class="meta-chip">متقدم</span>
+                <span class="meta-chip">تجارب حضورية</span>
+                <span class="meta-chip">يغلق بعد 2 يوم</span>
+              </div>
+              <div class="card-actions">
+                <button class="primary-btn" data-goto="opportunity">عرض</button>
+                <button class="outline-btn" data-goto="apply">قدم الآن</button>
+              </div>
+            </article>
+            <article class="opportunity-card">
+              <div class="card-top">
+                <div class="entity">
+                  <div class="entity-logo green">AT</div>
+                  <div>
+                    <h4>مركز التميز</h4>
+                    <p>الرياض · ألعاب قوى</p>
+                  </div>
+                </div>
+                <span class="tag green">مفتوحة</span>
+              </div>
+              <h5>برنامج اكتشاف مواهب السرعات القصيرة</h5>
+              <p class="desc">فرصة للرياضيين في فئة الناشئين مع تقييم أولي واختبارات أداء ميدانية داخل المركز.</p>
+              <div class="meta-list">
+                <span class="meta-chip">14–18 سنة</span>
+                <span class="meta-chip">اختبار ميداني</span>
+                <span class="meta-chip">مجاني</span>
+              </div>
+              <div class="card-actions">
+                <button class="primary-btn" data-goto="opportunity">عرض</button>
+                <button class="outline-btn" data-goto="apply">قدم الآن</button>
+              </div>
+            </article>
+            <article class="opportunity-card">
+              <div class="card-top">
+                <div class="entity">
+                  <div class="entity-logo orange">TN</div>
+                  <div>
+                    <h4>نادي الأفق</h4>
+                    <p>الرياض · تنس</p>
+                  </div>
+                </div>
+                <span class="tag orange">يغلق قريبًا</span>
+              </div>
+              <h5>استقبال طلبات لاعبي التنس للمستوى المتوسط والمتقدم</h5>
+              <p class="desc">فرصة مرنة للأفراد الباحثين عن الانضمام إلى برنامج تدريبي تنافسي مع مدربين معتمدين.</p>
+              <div class="meta-list">
+                <span class="meta-chip">متوسط / متقدم</span>
+                <span class="meta-chip">برنامج موسمي</span>
+                <span class="meta-chip">آخر يوم غدًا</span>
+              </div>
+              <div class="card-actions">
+                <button class="primary-btn" data-goto="opportunity">عرض</button>
+                <button class="outline-btn" data-goto="apply">قدم الآن</button>
+              </div>
+            </article>
+          </div>
+        </div>
+
+        <div class="card empty-state">
+          <div style="font-size:56px;">📭</div>
+          <h4>لا توجد نتائج مطابقة لرياضة الملاكمة في مدينتك حاليًا</h4>
+          <p>وهنا تظهر القوة الأساسية للمنصة: بدل ما يخرج اللاعب بدون نتيجة، يمكنه إنشاء طلب انضمام مباشر ليصل إلى الجهات الرياضية المهتمة بنفس المجال عندما تصبح الفرصة متاحة أو عندما ترغب الجهات في مراجعة الطلبات المفتوحة.</p>
+          <div class="hero-actions" style="justify-content:center;">
+            <button class="primary-btn" data-goto="join-request">أنشئ طلب انضمام</button>
+            <button class="outline-btn">فعّل الإشعارات لهذه الرياضة</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="page" id="opportunity">
+        <div class="card">
+          <div class="section-head">
+            <div>
+              <h3>تفاصيل الفرصة</h3>
+              <p>صفحة توضح كل ما يحتاجه اللاعب لاتخاذ قرار التقديم بثقة</p>
+            </div>
+            <span class="tag green">جهة موثقة</span>
+          </div>
+          <div class="split">
+            <div class="list-card">
+              <div class="list-item" style="align-items:flex-start;">
+                <div class="entity">
+                  <div class="entity-logo">NA</div>
+                  <div>
+                    <h5 style="margin:0 0 8px; font-size:22px;">أكاديمية النخبة</h5>
+                    <p>الرياض · كرة قدم · جهة موثقة · سرعة استجابة عالية</p>
+                  </div>
+                </div>
+                <span class="tag blue">فرصة مناسبة لك</span>
+              </div>
+              <div class="card" style="padding:0; background:transparent; box-shadow:none; border:none;">
+                <h3 style="margin:0 0 10px;">استقبال طلبات لاعبي كرة القدم تحت 17 سنة</h3>
+                <p class="muted" style="line-height:1.95; margin:0;">تعلن أكاديمية النخبة عن فتح باب التقديم للمواهب الشابة في كرة القدم ضمن برنامج تطوير موسمي يركز على الجاهزية المهارية والالتزام التدريبي والقدرة على الاندماج داخل بيئة تنافسية. تستهدف الفرصة اللاعبين من الفئة العمرية 15–17 سنة في مراكز الجناح، الوسط، والهجوم.</p>
+              </div>
+
+              <div class="grid-2">
+                <div class="card">
+                  <div class="section-head"><div><h3>المتطلبات</h3></div></div>
+                  <div class="list-card">
+                    <div class="list-item"><div><h5>الفئة العمرية</h5><p>15–17 سنة</p></div><span class="tag blue">أساسي</span></div>
+                    <div class="list-item"><div><h5>المستوى المطلوب</h5><p>متوسط إلى متقدم</p></div><span class="tag blue">تقييم داخلي</span></div>
+                    <div class="list-item"><div><h5>المركز الرياضي</h5><p>جناح / وسط / مهاجم</p></div><span class="tag blue">حسب الحاجة</span></div>
+                    <div class="list-item"><div><h5>فيديو أداء</h5><p>اختياري لكنه يرفع فرص المراجعة السريعة</p></div><span class="tag green">موصى به</span></div>
+                  </div>
+                </div>
+                <div class="card">
+                  <div class="section-head"><div><h3>آلية التقديم</h3></div></div>
+                  <div class="list-card">
+                    <div class="list-item"><div><h5>آخر موعد</h5><p>بعد 4 أيام</p></div><span class="tag orange">قريب</span></div>
+                    <div class="list-item"><div><h5>مرحلة المراجعة</h5><p>خلال 3–5 أيام عمل</p></div><span class="tag blue">زمن واضح</span></div>
+                    <div class="list-item"><div><h5>التجارب الحضورية</h5><p>نعم، بعد الفرز الأولي</p></div><span class="tag green">متاحة</span></div>
+                    <div class="list-item"><div><h5>رسوم التقديم</h5><p>لا توجد رسوم</p></div><span class="tag green">مجاني</span></div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="card">
+                <div class="section-head">
+                  <div>
+                    <h3>عن الجهة</h3>
+                    <p>نبذة مختصرة لبناء الثقة قبل التقديم</p>
+                  </div>
+                </div>
+                <p class="muted" style="line-height:2; margin:0;">أكاديمية النخبة جهة رياضية متخصصة في تطوير المواهب الناشئة، وتدير برامج موسمية وتنافسية في كرة القدم بالشراكة مع طواقم تدريبية معتمدة. تركز الأكاديمية على بناء المهارة والالتزام والانضباط، وقد خرّجت عدة لاعبين إلى برامج أكثر تقدمًا داخل بيئات تنافسية. توفر الأكاديمية برامج تدريجية، بنية تدريبية واضحة، وجدول متابعة دوري للاعبين المقبولين.</p>
+              </div>
+            </div>
+
+            <div class="card list-card">
+              <div class="section-head">
+                <div>
+                  <h3>ملخص سريع</h3>
+                  <p>عناصر أساسية تساعد اللاعب قبل الضغط على التقديم</p>
+                </div>
+              </div>
+              <div class="list-item"><div><h5>المدينة</h5><p>الرياض</p></div><span class="tag blue">موقع ثابت</span></div>
+              <div class="list-item"><div><h5>عدد المقاعد المتوقعة</h5><p>12 لاعبًا</p></div><span class="tag green">محدود</span></div>
+              <div class="list-item"><div><h5>حالة الجهة</h5><p>موثقة ومعتمدة داخل النظام</p></div><span class="tag green">Verified</span></div>
+              <div class="list-item"><div><h5>نسبة التوافق مع ملفك</h5><p>89%</p></div><span class="tag blue">مرتفعة</span></div>
+              <div class="kpi-note">تم تصميم هذه الصفحة لتكون نقطة التحويل الأساسية داخل المنصة: كل ما يحتاجه اللاعب موجود في مكان واحد، مع زر ثابت للتقديم، وزر لحفظ الفرصة أو مشاركتها.</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="sticky-footer-demo">
+          <div>
+            <strong>أكاديمية النخبة · فرصة مفتوحة</strong>
+            <div class="muted" style="margin-top:6px; font-size:13px;">آخر موعد بعد 4 أيام · لا توجد رسوم · مراجعة خلال 3–5 أيام</div>
+          </div>
+          <div class="card-actions" style="margin-top:0;">
+            <button class="outline-btn">حفظ الفرصة</button>
+            <button class="outline-btn">مشاركة</button>
+            <button class="primary-btn" data-goto="apply">قدم الآن</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="page" id="apply">
+        <div class="card">
+          <div class="section-head">
+            <div>
+              <h3>التقديم على الفرصة</h3>
+              <p>نموذج متكامل يجمع البيانات الأساسية، المعلومات الرياضية، والملفات الداعمة</p>
+            </div>
+            <div class="screen-badge">Application Form</div>
+          </div>
+          <div class="form-grid">
+            <div class="form-group">
+              <label>الاسم الكامل</label>
+              <input class="field" value="Mohammed Bader" />
+            </div>
+            <div class="form-group">
+              <label>العمر</label>
+              <input class="field" value="16" />
+            </div>
+            <div class="form-group">
+              <label>رقم الجوال</label>
+              <input class="field" value="05XXXXXXXX" />
+            </div>
+            <div class="form-group">
+              <label>البريد الإلكتروني</label>
+              <input class="field" value="player@sportgate.sa" />
+            </div>
+            <div class="form-group">
+              <label>المدينة</label>
+              <select><option>الرياض</option><option>الدمام</option><option>جدة</option></select>
+            </div>
+            <div class="form-group">
+              <label>الرياضة الأساسية</label>
+              <select><option>كرة القدم</option><option>كرة السلة</option><option>سباحة</option></select>
+            </div>
+            <div class="form-group">
+              <label>المركز / التخصص</label>
+              <select><option>جناح</option><option>وسط</option><option>مهاجم</option></select>
+            </div>
+            <div class="form-group">
+              <label>المستوى الرياضي</label>
+              <select><option>متوسط</option><option>متقدم</option><option>تنافسي</option></select>
+            </div>
+            <div class="form-group">
+              <label>عدد سنوات الممارسة</label>
+              <input class="field" value="4 سنوات" />
+            </div>
+            <div class="form-group">
+              <label>هل سبق لك الانضمام إلى نادٍ أو أكاديمية؟</label>
+              <select><option>نعم</option><option>لا</option></select>
+            </div>
+            <div class="form-group full">
+              <label>عرّف بنفسك رياضيًا</label>
+              <textarea>لاعب كرة قدم ملتزم، أبحث عن بيئة تدريبية تنافسية تساعدني على تطوير مستواي والانتقال إلى مستوى أعلى. لدي خبرة عدة سنوات في التدريب وأرغب بالانضمام إلى فرصة تمنحني تقييمًا واضحًا ومسار تطور عملي.</textarea>
+            </div>
+            <div class="form-group full">
+              <label>رفع فيديو الأداء والملفات الداعمة</label>
+              <div class="upload-box">
+                <strong>اسحب الملفات هنا أو اضغط للرفع</strong><br>
+                فيديو أداء · صورة شخصية · شهادة بطولة · ملف PDF للسيرة الرياضية
+              </div>
+            </div>
+            <div class="form-group full">
+              <label>أسئلة إضافية من الجهة</label>
+              <textarea>لماذا ترغب بالانضمام إلى هذه الأكاديمية؟ وهل تستطيع حضور التجارب الحضورية خلال الأسبوع القادم؟</textarea>
+            </div>
+          </div>
+          <div class="card-actions" style="margin-top:18px;">
+            <button class="outline-btn">حفظ كمسودة</button>
+            <button class="soft-btn">مراجعة الطلب</button>
+            <button class="primary-btn" id="submitApplicationBtn">إرسال الطلب</button>
+          </div>
+        </div>
+
+        <div class="card" id="successBox" style="display:none;">
+          <div class="empty-state" style="border-style:solid; background:linear-gradient(180deg,#f6fff9,#ffffff);">
+            <div style="font-size:56px;">✅</div>
+            <h4>تم إرسال طلبك بنجاح</h4>
+            <p>سيتم إشعارك عندما تبدأ الجهة بمراجعة طلبك. يمكنك الآن متابعة حالة الطلب من صفحة "طلباتي" أو استكشاف فرص إضافية مشابهة.</p>
+            <div class="hero-actions" style="justify-content:center;">
+              <button class="primary-btn" data-goto="applications">عرض طلباتي</button>
+              <button class="outline-btn" data-goto="player-home">العودة للرئيسية</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="page" id="join-request">
+        <div class="card">
+          <div class="section-head">
+            <div>
+              <h3>إرسال طلب انضمام</h3>
+              <p>الميزة الجوهرية في المشروع: عندما لا يجد اللاعب فرصة منشورة، يستطيع إرسال طلبه مباشرة للجهات المناسبة أو لجهة محددة</p>
+            </div>
+            <div class="screen-badge">Core Value Proposition</div>
+          </div>
+          <div class="kpi-note" style="margin-bottom:16px;">هذا المسار يحل الفجوة الأساسية في السوق: اللاعب لا يبقى معتمدًا فقط على الفرص المعلنة، بل يصبح لديه مسار استباقي يعرض رغبته على الجهة الرياضية أو على النظام ككل.</div>
+          <div class="form-grid">
+            <div class="form-group">
+              <label>الرياضة المطلوبة</label>
+              <select><option>كرة القدم</option><option>كرة السلة</option><option>سباحة</option><option>ملاكمة</option></select>
+            </div>
+            <div class="form-group">
+              <label>المركز / التخصص</label>
+              <input class="field" placeholder="مثل: جناح، وسط، سباحة حرة" />
+            </div>
+            <div class="form-group">
+              <label>الفئة العمرية</label>
+              <select><option>15–17 سنة</option><option>18–21 سنة</option></select>
+            </div>
+            <div class="form-group">
+              <label>المستوى</label>
+              <select><option>متوسط</option><option>متقدم</option><option>تنافسي</option></select>
+            </div>
+            <div class="form-group">
+              <label>المدينة الحالية</label>
+              <select><option>الرياض</option><option>الدمام</option><option>جدة</option></select>
+            </div>
+            <div class="form-group">
+              <label>مدن إضافية متاحة</label>
+              <input class="field" placeholder="مثل: الخبر، الظهران" />
+            </div>
+            <div class="form-group">
+              <label>نوع الجهة المستهدفة</label>
+              <select><option>أكاديمية</option><option>نادي</option><option>كلاهما</option></select>
+            </div>
+            <div class="form-group">
+              <label>هل ترغب في جهة محددة؟</label>
+              <select><option>لا</option><option>نعم</option></select>
+            </div>
+            <div class="form-group full">
+              <label>الهدف من الانضمام</label>
+              <select><option>تطوير مهاري</option><option>برنامج تدريبي احترافي</option><option>تجارب</option><option>منافسات</option></select>
+            </div>
+            <div class="form-group full">
+              <label>نبذة مختصرة عن رغبتك</label>
+              <textarea placeholder="اكتب لماذا ترغب في الانضمام وما الذي تبحث عنه بالضبط"></textarea>
+            </div>
+            <div class="form-group full">
+              <label>المرفقات</label>
+              <div class="upload-box">أضف فيديو أداء أو أي ملفات تدعم طلب الانضمام لزيادة فرص المراجعة من الجهات الرياضية.</div>
+            </div>
+          </div>
+          <div class="card-actions" style="margin-top:18px;">
+            <button class="outline-btn">حفظ كمسودة</button>
+            <button class="primary-btn">إرسال طلب الانضمام</button>
+          </div>
+        </div>
+
+        <div class="grid-2">
+          <div class="card">
+            <div class="section-head"><div><h3>كيف تعمل هذه الميزة؟</h3><p>تدفق منطقي يقنع المحكمين أن الفكرة عملية بالكامل</p></div></div>
+            <div class="timeline">
+              <div class="timeline-item"><h5>1. اللاعب لا يجد فرصة مناسبة</h5><p>داخل البحث أو داخل صفحة جهة معينة، يكتشف عدم وجود إعلان مفتوح للرياضة المطلوبة.</p></div>
+              <div class="timeline-item"><h5>2. ينشئ طلب انضمام مباشر</h5><p>يحدد الرياضة، المستوى، المدينة، ونوع الجهة المرغوبة، مع إمكانية اختيار جهة معينة.</p></div>
+              <div class="timeline-item"><h5>3. يتم توجيه الطلب بذكاء</h5><p>الطلب يصل للجهة المختارة أو يدخل في قاعدة الطلبات المفتوحة المربوطة بالتصنيف الرياضي والجغرافي.</p></div>
+              <div class="timeline-item"><h5>4. الجهة تراجعه عند الحاجة</h5><p>النادي أو الأكاديمية يرى الطلب ضمن لوحة التحكم ويمكنه الرد أو دعوة اللاعب للتجربة.</p></div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="section-head"><div><h3>الحالات المحتملة</h3><p>حتى يبدو النظام ناضجًا وعمليًا أمام المحكمين</p></div></div>
+            <div class="list-card">
+              <div class="list-item"><div><h5>تم الإرسال</h5><p>الطلب دخل النظام بنجاح</p></div><span class="tag blue">Initial</span></div>
+              <div class="list-item"><div><h5>تم الاطلاع</h5><p>جهة رياضية فتحت الطلب وراجعت البيانات</p></div><span class="tag orange">Viewed</span></div>
+              <div class="list-item"><div><h5>قيد المراجعة</h5><p>تتم مقارنة الطلب مع احتياج الجهة الحالي</p></div><span class="tag orange">Review</span></div>
+              <div class="list-item"><div><h5>مهتمة بالتواصل</h5><p>الجهة تريد الانتقال لمرحلة تواصل أو تجربة</p></div><span class="tag green">Positive</span></div>
+              <div class="list-item"><div><h5>مغلق حاليًا</h5><p>لا توجد فرصة مناسبة في الوقت الحالي</p></div><span class="tag red">Closed</span></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="page" id="profile">
+        <div class="hero">
+          <div class="card">
+            <div class="card-top">
+              <div class="entity">
+                <div class="entity-logo">م</div>
+                <div>
+                  <h4 style="font-size:24px;">Mohammed Bader</h4>
+                  <p>16 سنة · الرياض · كرة القدم · جناح · مستوى متقدم</p>
+                </div>
+              </div>
+              <span class="tag green">الملف مرئي للجهات</span>
+            </div>
+            <div style="margin-top:18px;">
+              <div style="display:flex; justify-content:space-between; gap:12px; margin-bottom:8px;">
+                <strong>اكتمال الملف الرياضي</strong>
+                <span class="muted">84%</span>
+              </div>
+              <div class="progress"><div style="width:84%;"></div></div>
+              <p class="muted" style="margin:10px 0 0; line-height:1.8;">أضف فيديو أداء وشهادة بطولة واحدة على الأقل لزيادة ظهور ملفك أمام الأندية والأكاديميات.</p>
+            </div>
+            <div class="card-actions" style="margin-top:16px;">
+              <button class="primary-btn">تعديل الملف</button>
+              <button class="outline-btn">مشاركة الملف</button>
+              <button class="soft-btn">إعدادات الخصوصية</button>
+            </div>
+          </div>
+          <div class="card">
+            <div class="section-head"><div><h3>مؤشرات الملف</h3><p>ما الذي يراه اللاعب مباشرة عن جاهزية ملفه</p></div></div>
+            <div class="summary-grid">
+              <div class="summary-item"><h4>الإنجازات</h4><strong>3</strong><small>شهادات وبطولات مضافة للملف.</small></div>
+              <div class="summary-item"><h4>الفيديوهات</h4><strong>2</strong><small>روابط أداء مرئية للأكاديميات.</small></div>
+              <div class="summary-item"><h4>الظهور للجهات</h4><strong>مرتفعة</strong><small>بسبب اكتمال الملف والنشاط.</small></div>
+              <div class="summary-item"><h4>مشاهدات الملف</h4><strong>28</strong><small>خلال آخر 30 يومًا.</small></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="grid-2">
+          <div class="card">
+            <div class="section-head"><div><h3>النبذة الرياضية</h3></div></div>
+            <p class="muted" style="line-height:2; margin:0;">لاعب ملتزم أبحث عن بيئة تدريبية تنافسية تساعدني على تطوير مستواي في كرة القدم والانتقال إلى مراحل أعلى. أتميز بالانضباط والحضور المستمر والرغبة في التعلم والعمل ضمن فريق.</p>
+          </div>
+          <div class="card">
+            <div class="section-head"><div><h3>المعلومات الرياضية</h3></div></div>
+            <div class="list-card">
+              <div class="list-item"><div><h5>الرياضة الأساسية</h5><p>كرة القدم</p></div><span class="tag blue">Primary</span></div>
+              <div class="list-item"><div><h5>المركز</h5><p>جناح</p></div><span class="tag blue">Role</span></div>
+              <div class="list-item"><div><h5>عدد سنوات الممارسة</h5><p>4 سنوات</p></div><span class="tag blue">Experience</span></div>
+              <div class="list-item"><div><h5>الخبرة السابقة</h5><p>أكاديمية محلية وبرامج تدريبية موسمية</p></div><span class="tag green">Added</span></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="grid-2">
+          <div class="card">
+            <div class="section-head"><div><h3>الإنجازات</h3></div></div>
+            <div class="list-card">
+              <div class="list-item"><div><h5>بطولة مدرسية</h5><p>أفضل أداء هجومي · 2025</p></div><button class="outline-btn">عرض</button></div>
+              <div class="list-item"><div><h5>شهادة تطوير مهاري</h5><p>برنامج تدريبي صيفي · 2024</p></div><button class="outline-btn">عرض</button></div>
+              <div class="list-item"><div><h5>مشاركة تنافسية</h5><p>بطولة محلية للشباب · 2025</p></div><button class="outline-btn">عرض</button></div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="section-head"><div><h3>الملفات والوسائط</h3></div></div>
+            <div class="list-card">
+              <div class="list-item"><div><h5>فيديو أداء 01</h5><p>مهارات وتحركات هجومية · 48 ثانية</p></div><button class="soft-btn">تشغيل</button></div>
+              <div class="list-item"><div><h5>فيديو أداء 02</h5><p>تمارين ومقاطع لعب · 1:12 دقيقة</p></div><button class="soft-btn">تشغيل</button></div>
+              <div class="list-item"><div><h5>سيرة رياضية PDF</h5><p>نبذة وإنجازات ومعلومات أساسية</p></div><button class="soft-btn">فتح</button></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="page" id="applications">
+        <div class="card">
+          <div class="section-head">
+            <div>
+              <h3>طلباتي</h3>
+              <p>مركز متابعة شامل للطلبات المرسلة وحالاتها وتحديثاتها الأخيرة</p>
+            </div>
+            <div class="filter-row">
+              <button class="pill active">الكل</button>
+              <button class="pill">قيد المراجعة</button>
+              <button class="pill">مقبول مبدئيًا</button>
+              <button class="pill">مرفوض</button>
+              <button class="pill">طلبات الانضمام</button>
+            </div>
+          </div>
+          <div class="grid-2">
+            <div class="card" style="padding:18px;">
+              <div class="section-head"><div><h3>الطلبات الحالية</h3></div></div>
+              <div class="list-card">
+                <div class="list-item"><div><h5>أكاديمية النخبة</h5><p>طلب انضمام لفرصة كرة القدم · أُرسل اليوم</p></div><span class="tag orange">قيد المراجعة</span></div>
+                <div class="list-item"><div><h5>نادي السرعة</h5><p>فرصة سباحة تنافسية · قبل 3 أيام</p></div><span class="tag green">دعوة للتجربة</span></div>
+                <div class="list-item"><div><h5>أكاديمية الارتقاء</h5><p>برنامج كرة سلة · قبل أسبوع</p></div><span class="tag red">مغلق</span></div>
+                <div class="list-item"><div><h5>طلب انضمام مفتوح</h5><p>كرة ملاكمة · الرياض · قبل يومين</p></div><span class="tag blue">تم الاطلاع</span></div>
+              </div>
+            </div>
+            <div class="card">
+              <div class="section-head"><div><h3>تفاصيل طلب محدد</h3><p>مثال على صفحة التفاصيل مع مسار الحالة</p></div></div>
+              <div class="timeline">
+                <div class="timeline-item"><h5>تم إرسال الطلب</h5><p>أُرسل طلبك إلى أكاديمية النخبة وتم تسجيله داخل النظام بنجاح.</p></div>
+                <div class="timeline-item"><h5>تم استلام الطلب</h5><p>الجهة استلمت الملف الرياضي والمرفقات المرتبطة به.</p></div>
+                <div class="timeline-item"><h5>قيد المراجعة</h5><p>يتم حاليًا تقييم البيانات والمقارنة مع احتياج الجهة ومتطلبات الفرصة.</p></div>
+                <div class="timeline-item"><h5>الخطوة التالية المحتملة</h5><p>دعوة للتجربة الحضورية أو طلب معلومات إضافية من اللاعب.</p></div>
+              </div>
+              <div class="card-actions" style="margin-top:20px;">
+                <button class="outline-btn">رفع ملف إضافي</button>
+                <button class="danger-btn">سحب الطلب</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="page" id="notifications">
+        <div class="card">
+          <div class="section-head">
+            <div>
+              <h3>الإشعارات</h3>
+              <p>إشعارات ذكية مرتبطة بالفرص، حالات الطلبات، والجهات المناسبة</p>
+            </div>
+            <button class="soft-btn">تحديد الكل كمقروء</button>
+          </div>
+          <div class="list-card">
+            <div class="list-item"><div><h5>فرصة جديدة في كرة القدم</h5><p>أكاديمية جديدة في الرياض فتحت التقديم للفئة العمرية 15–17 سنة قبل 20 دقيقة</p></div><span class="tag green">جديد</span></div>
+            <div class="list-item"><div><h5>تم تحديث حالة طلبك</h5><p>طلبك لدى نادي السرعة انتقل إلى مرحلة "دعوة للتجربة" قبل ساعة</p></div><span class="tag orange">مهم</span></div>
+            <div class="list-item"><div><h5>جهة رياضية اطلعت على ملفك</h5><p>أكاديمية النخبة فتحت الملف الرياضي الخاص بك قبل 3 ساعات</p></div><span class="tag blue">نشاط</span></div>
+            <div class="list-item"><div><h5>تنبيه انتهاء فرصة</h5><p>فرصة نادي الأفق في رياضة التنس تغلق غدًا، قدّم قبل انتهاء الموعد</p></div><span class="tag red">عاجل</span></div>
+            <div class="list-item"><div><h5>لا توجد فرص حاليًا في رياضتك الثانية</h5><p>يمكنك إنشاء طلب انضمام مباشر بدلًا من انتظار نشر فرصة جديدة</p></div><button class="primary-btn" data-goto="join-request">إنشاء طلب</button></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="page" id="club-dashboard">
+        <div class="hero">
+          <div class="card hero-main" style="min-height:220px;">
+            <div class="screen-badge">واجهة الجهة الرياضية</div>
+            <h2>لوحة تحكم شاملة للنادي أو الأكاديمية لإدارة الفرص، مراجعة المتقدمين، واتخاذ قرارات سريعة.</h2>
+            <p>الهدف من هذه الواجهة هو إقناع المحكمين أن المنصة تخدم الطرفين: اللاعب والجهة. كل فرصة منشورة يمكن إدارتها، وكل متقدم يمكن فرزه ومراجعته واتخاذ إجراء عليه من مكان واحد.</p>
+            <div class="hero-actions">
+              <button class="primary-btn" data-goto="new-opportunity">إضافة فرصة جديدة</button>
+              <button class="outline-btn" data-goto="review-applicants">مراجعة المتقدمين</button>
+            </div>
+          </div>
+          <div class="card">
+            <div class="section-head"><div><h3>نظرة عامة</h3><p>مؤشرات تشغيلية سريعة للجهة</p></div></div>
+            <div class="summary-grid">
+              <div class="summary-item"><h4>الفرص النشطة</h4><strong>8</strong><small>فرص متاحة الآن للاعبين.</small></div>
+              <div class="summary-item"><h4>طلبات جديدة</h4><strong>26</strong><small>خلال آخر 7 أيام.</small></div>
+              <div class="summary-item"><h4>قيد المراجعة</h4><strong>14</strong><small>تحتاج قرارات من فريق التوظيف الرياضي.</small></div>
+              <div class="summary-item"><h4>القبول المبدئي</h4><strong>5</strong><small>لاعبون تم نقلهم للمرحلة التالية.</small></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="stat-panel">
+          <div class="stat-box"><span>إجمالي المشاهدات</span><strong>1,248</strong><small>مشاهدات الفرص المنشورة هذا الشهر</small></div>
+          <div class="stat-box"><span>معدل الاستجابة</span><strong>92%</strong><small>مؤشر ثقة مهم داخل النظام</small></div>
+          <div class="stat-box"><span>طلبات الانضمام المفتوحة</span><strong>17</strong><small>طلبات غير مرتبطة بفرصة محددة</small></div>
+          <div class="stat-box"><span>فرص تنتهي قريبًا</span><strong>3</strong><small>تحتاج تحديثًا أو إغلاقًا قريبًا</small></div>
+        </div>
+
+        <div class="split">
+          <div class="card">
+            <div class="section-head"><div><h3>الفرص المنشورة</h3><p>أحدث الفرص الحالية التابعة للجهة</p></div></div>
+            <div class="list-card">
+              <div class="list-item"><div><h5>تجارب كرة القدم تحت 17 سنة</h5><p>الرياض · 34 متقدمًا · يغلق بعد 4 أيام</p></div><div class="list-actions"><span class="tag green">مفتوحة</span><button class="soft-btn">تعديل</button></div></div>
+              <div class="list-item"><div><h5>استقبال لاعبي السباحة الناشئين</h5><p>الرياض · 12 متقدمًا · مراجعة سريعة</p></div><div class="list-actions"><span class="tag orange">قريب</span><button class="soft-btn">تعديل</button></div></div>
+              <div class="list-item"><div><h5>برنامج كرة السلة للفئة المتقدمة</h5><p>الرياض · 21 متقدمًا · فرصة مميزة</p></div><div class="list-actions"><span class="tag blue">مميزة</span><button class="soft-btn">تعديل</button></div></div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="section-head"><div><h3>أحدث الطلبات</h3><p>أحدث اللاعبين الذين دخلوا خط المراجعة</p></div></div>
+            <div class="list-card">
+              <div class="list-item"><div><h5>Mohammed Bader</h5><p>كرة قدم · جناح · ملف شبه مكتمل</p></div><button class="primary-btn" data-goto="review-applicants">عرض الملف</button></div>
+              <div class="list-item"><div><h5>Faisal Salem</h5><p>سباحة · مستوى متقدم · فيديو مرفق</p></div><button class="primary-btn" data-goto="review-applicants">عرض الملف</button></div>
+              <div class="list-item"><div><h5>Ali Nasser</h5><p>كرة سلة · طلب انضمام مباشر</p></div><button class="primary-btn" data-goto="review-applicants">عرض الملف</button></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="page" id="new-opportunity">
+        <div class="card">
+          <div class="section-head">
+            <div>
+              <h3>إضافة فرصة جديدة</h3>
+              <p>نموذج خاص بالجهة الرياضية لإنشاء فرصة قابلة للنشر والإدارة داخل المنصة</p>
+            </div>
+            <div class="screen-badge">Create Opportunity</div>
+          </div>
+          <div class="form-grid">
+            <div class="form-group">
+              <label>اسم الفرصة</label>
+              <input class="field" placeholder="مثال: استقبال طلبات لاعبي كرة القدم تحت 17 سنة" />
+            </div>
+            <div class="form-group">
+              <label>نوع الرياضة</label>
+              <select><option>كرة القدم</option><option>كرة السلة</option><option>سباحة</option></select>
+            </div>
+            <div class="form-group">
+              <label>المركز / التخصص</label>
+              <input class="field" placeholder="مثل: جناح، حارس، سباحة حرة" />
+            </div>
+            <div class="form-group">
+              <label>الفئة العمرية</label>
+              <select><option>15–17 سنة</option><option>18–21 سنة</option></select>
+            </div>
+            <div class="form-group">
+              <label>الجنس</label>
+              <select><option>ذكور</option><option>إناث</option><option>الكل</option></select>
+            </div>
+            <div class="form-group">
+              <label>المستوى المطلوب</label>
+              <select><option>متوسط</option><option>متقدم</option><option>تنافسي</option></select>
+            </div>
+            <div class="form-group">
+              <label>المدينة</label>
+              <select><option>الرياض</option><option>جدة</option><option>الدمام</option></select>
+            </div>
+            <div class="form-group">
+              <label>آخر موعد للتقديم</label>
+              <input class="field" value="2026-04-28" />
+            </div>
+            <div class="form-group full">
+              <label>وصف الفرصة</label>
+              <textarea placeholder="اكتب وصفًا واضحًا يشرح ما الذي تبحث عنه الجهة، طبيعة البرنامج، وما الذي سيحصل عليه اللاعب"></textarea>
+            </div>
+            <div class="form-group full">
+              <label>أسئلة إضافية للمتقدمين</label>
+              <textarea placeholder="مثل: لماذا ترغب بالانضمام؟ هل تستطيع الحضور للتجارب؟"></textarea>
+            </div>
+            <div class="form-group full">
+              <label>إعدادات النشر</label>
+              <div class="list-card">
+                <div class="list-item"><div><h5>إبراز الفرصة</h5><p>جعلها تظهر ضمن الفرص المميزة</p></div><span class="tag blue">Optional</span></div>
+                <div class="list-item"><div><h5>حفظ كمسودة</h5><p>إمكانية المراجعة قبل النشر</p></div><span class="tag green">Draft</span></div>
+                <div class="list-item"><div><h5>استهداف مخصص</h5><p>إظهارها فقط لفئة عمرية أو مستوى محدد</p></div><span class="tag blue">Targeting</span></div>
+              </div>
+            </div>
+          </div>
+          <div class="card-actions" style="margin-top:18px;">
+            <button class="outline-btn">حفظ كمسودة</button>
+            <button class="soft-btn">معاينة</button>
+            <button class="primary-btn">نشر الفرصة</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="page" id="review-applicants">
+        <div class="card">
+          <div class="section-head">
+            <div>
+              <h3>مراجعة المتقدمين</h3>
+              <p>واجهة تشغيلية للجهة تساعدها على الفرز واتخاذ القرار بسرعة ووضوح</p>
+            </div>
+            <div class="filter-row">
+              <button class="pill active">الكل</button>
+              <button class="pill">مع فيديو</button>
+              <button class="pill">مستوى متقدم</button>
+              <button class="pill">الأحدث</button>
+            </div>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>اللاعب</th>
+                  <th>العمر</th>
+                  <th>الرياضة / المركز</th>
+                  <th>المدينة</th>
+                  <th>المستوى</th>
+                  <th>الفيديو</th>
+                  <th>الحالة</th>
+                  <th>إجراء</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>Mohammed Bader</strong></td>
+                  <td>16</td>
+                  <td>كرة قدم · جناح</td>
+                  <td>الرياض</td>
+                  <td>متقدم</td>
+                  <td>متوفر</td>
+                  <td><span class="tag orange">قيد المراجعة</span></td>
+                  <td><button class="soft-btn">عرض الملف</button></td>
+                </tr>
+                <tr>
+                  <td><strong>Faisal Salem</strong></td>
+                  <td>17</td>
+                  <td>كرة قدم · وسط</td>
+                  <td>الخرج</td>
+                  <td>متوسط</td>
+                  <td>متوفر</td>
+                  <td><span class="tag green">جاهز للقرار</span></td>
+                  <td><button class="soft-btn">عرض الملف</button></td>
+                </tr>
+                <tr>
+                  <td><strong>Ali Nasser</strong></td>
+                  <td>15</td>
+                  <td>طلب انضمام مباشر</td>
+                  <td>الرياض</td>
+                  <td>متوسط</td>
+                  <td>غير متوفر</td>
+                  <td><span class="tag blue">تم الاطلاع</span></td>
+                  <td><button class="soft-btn">عرض الملف</button></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="grid-2">
+          <div class="card">
+            <div class="section-head"><div><h3>ملف لاعب — عرض من جهة النادي</h3><p>نموذج للـ CV الرياضي الذي تراجعه الجهة قبل اتخاذ القرار</p></div></div>
+            <div class="list-card">
+              <div class="list-item"><div><h5>الاسم</h5><p>Mohammed Bader</p></div><span class="tag blue">ملف شبه مكتمل</span></div>
+              <div class="list-item"><div><h5>البيانات الرياضية</h5><p>كرة قدم · جناح · 4 سنوات ممارسة · متقدم</p></div><button class="outline-btn">فتح الفيديو</button></div>
+              <div class="list-item"><div><h5>النبذة</h5><p>لاعب ملتزم يبحث عن بيئة تنافسية لتطوير مستواه</p></div><button class="outline-btn">تفاصيل</button></div>
+              <div class="list-item"><div><h5>المرفقات</h5><p>فيديو أداء + شهادة بطولة + ملف PDF</p></div><button class="outline-btn">فتح</button></div>
+            </div>
+            <div class="card-actions" style="margin-top:18px;">
+              <button class="primary-btn">قبول مبدئي</button>
+              <button class="soft-btn">دعوة لتجربة</button>
+              <button class="danger-btn">رفض</button>
+            </div>
+          </div>
+          <div class="card">
+            <div class="section-head"><div><h3>منطق القرار داخل الجهة</h3><p>كيف يدعم البروتوتايب مسارًا عمليًا لاختيار اللاعبين</p></div></div>
+            <div class="timeline">
+              <div class="timeline-item"><h5>استلام الطلب</h5><p>يظهر مباشرة داخل لوحة التحكم بحسب الفرصة أو كطلب انضمام مفتوح.</p></div>
+              <div class="timeline-item"><h5>المراجعة السريعة</h5><p>يتم التحقق من العمر، الرياضة، المستوى، والملفات المرفقة.</p></div>
+              <div class="timeline-item"><h5>الفرز واتخاذ الإجراء</h5><p>الجهة تختار بين قبول مبدئي، دعوة لتجربة، طلب معلومات إضافية، أو الرفض.</p></div>
+              <div class="timeline-item"><h5>تحديث اللاعب تلقائيًا</h5><p>يتلقى اللاعب إشعارًا فوريًا بالحالة الجديدة ويستطيع متابعتها من صفحة طلباته.</p></div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <div class="bottom-nav-mobile" id="mobileNav">
+    <button class="mobile-nav-btn active" data-page="player-home">الرئيسية</button>
+    <button class="mobile-nav-btn" data-page="explore">استكشاف</button>
+    <button class="mobile-nav-btn" data-page="join-request">طلب</button>
+    <button class="mobile-nav-btn" data-page="applications">طلباتي</button>
+    <button class="mobile-nav-btn" data-page="profile">حسابي</button>
+  </div>
+
+  <script>
+    const pages = document.querySelectorAll('.page');
+    const navBtns = document.querySelectorAll('.nav-btn');
+    const mobileNavBtns = document.querySelectorAll('.mobile-nav-btn');
+    const gotoBtns = document.querySelectorAll('[data-goto]');
+    const roleSwitchBtns = document.querySelectorAll('#roleSwitch button');
+    const playerMenus = document.querySelectorAll('.role-player');
+    const clubMenus = document.querySelectorAll('.role-club');
+    const demoFlowBtn = document.getElementById('demoFlowBtn');
+    const submitApplicationBtn = document.getElementById('submitApplicationBtn');
+    const successBox = document.getElementById('successBox');
+
+    let currentRole = 'player';
+
+    function setActivePage(id) {
+      pages.forEach(page => page.classList.toggle('active', page.id === id));
+      navBtns.forEach(btn => btn.classList.toggle('active', btn.dataset.page === id));
+      mobileNavBtns.forEach(btn => btn.classList.toggle('active', btn.dataset.page === id));
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    navBtns.forEach(btn => btn.addEventListener('click', () => setActivePage(btn.dataset.page)));
+    mobileNavBtns.forEach(btn => btn.addEventListener('click', () => setActivePage(btn.dataset.page)));
+    gotoBtns.forEach(btn => btn.addEventListener('click', () => setActivePage(btn.dataset.goto)));
+
+    roleSwitchBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        roleSwitchBtns.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        currentRole = btn.dataset.role;
+        const isPlayer = currentRole === 'player';
+        playerMenus.forEach(el => el.style.display = isPlayer ? '' : 'none');
+        clubMenus.forEach(el => el.style.display = isPlayer ? 'none' : '');
+        document.getElementById('mobileNav').style.display = isPlayer && window.innerWidth <= 920 ? 'grid' : 'none';
+        setActivePage(isPlayer ? 'player-home' : 'club-dashboard');
+      });
+    });
+
+    demoFlowBtn.addEventListener('click', async () => {
+      const sequence = currentRole === 'player'
+        ? ['player-home', 'explore', 'opportunity', 'apply', 'join-request', 'applications']
+        : ['club-dashboard', 'new-opportunity', 'review-applicants'];
+      for (const id of sequence) {
+        setActivePage(id);
+        await new Promise(r => setTimeout(r, 900));
+      }
+    });
+
+    submitApplicationBtn.addEventListener('click', () => {
+      successBox.style.display = 'block';
+      successBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    });
+
+    window.addEventListener('resize', () => {
+      document.getElementById('mobileNav').style.display = currentRole === 'player' && window.innerWidth <= 920 ? 'grid' : 'none';
+    });
+  </script>
+</body>
+</html>
